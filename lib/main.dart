@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:english_words/english_words.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 
@@ -19,8 +18,9 @@ class MyApp extends StatelessWidget {
 }
 
 class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+  final List<WordPair>_suggestions = <WordPair>[];
+  final Set<WordPair>_saved = Set<WordPair>();
+  final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
 
   Widget _buildSuggestions() {
     return ListView.builder(
@@ -30,17 +30,22 @@ class RandomWordsState extends State<RandomWords> {
 
           final index = i ~/ 2; /*3*/
           if (index >= _suggestions.length) {
-            _suggestions.addAll(prefix0.generateWordPairs().take(10)); /*4*/
+            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
           }
           return _buildRow(_suggestions[index]);
         });
   }
 
-  Widget _buildRow(prefix0.WordPair pair){
+  Widget _buildRow(WordPair pair){
+    final bool alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
+      ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved? Colors.red : null,
       ),
     );
   }
